@@ -1,0 +1,56 @@
+admin_and_analytics_serivce
+	1. Admin Controller
+		- http://localhost:9393/api/private/admin/getalladmin
+		- http://localhost:9393/api/private/admin/getuserbyid	
+	2. Analytics Controller
+		- pending
+
+content_and_event_service
+	1. Content Controller
+		- http://localhost:9292/api/private/content/newannouncement
+		- http://localhost:9292/api/private/content/getAllAnnouncement
+		- http://localhost:9292/api/private/content/getannouncementbyid
+		- http://localhost:9292/api/private/content/updateannouncement
+		- http://localhost:9292/api/private/content/deleteannouncement
+	2. EventController
+		- http://localhost:9292/api/private/event/createnewevent
+		- http://localhost:9292/api/private/event/getallevents
+		- http://localhost:9292/api/private/event/geteventbyid
+		- http://localhost:9292/api/private/event/registerevent
+		- http://localhost:9292/api/private/event/getalleventregistration
+
+core_service
+	1. Auth Controller
+		- http://localhost:9191/api/private/auth/register
+		- http://localhost:9191/api/private/auth/login
+		- http://localhost:9191/api/private/auth/logout
+	2. Notification Controller
+		- http://localhost:9191/api/private/notfication/createnotification
+		- http://localhost:9191/api/private/notfication/deletenotification
+	3. Profile Controller
+		- http://localhost:9191/api/private/profile/getuser
+		- http://localhost:9191/api/private/profile/getalluser
+		- http://localhost:9191/api/private/profile/updateprofile
+	4. Query Controller
+		- http://localhost:9191/api/private/queries/newcreate
+		- http://localhost:9191/api/private/notfication/checkquery
+		- http://localhost:9191/api/private/notfication/searchquery
+		- http://localhost:9191/api/private/notfication/staffresponse
+
+academic_service
+	1. AdmissionController
+		- http://localhost:9494/api/private/admission/registration
+		- http://localhost:9494/api/private/admission/approve - give id using request parameter
+	2. CourseController
+		- http://localhost:9494/api/private/course/getCourse - give id using request parameter
+	3. DegreeController
+		- http://localhost:9494/api/private/degree/addDegree
+		- http://localhost:9494/api/private/degree/addSemester - give id using request parameter
+	4. MaterialController
+		- http://localhost:9494/api/private/material/addMaterial - give id using request parameter
+		- http://localhost:9494/api/private/material/listMaterials - give id using request parameter
+		- http://localhost:9494/api/private/material/updateMaterial - give id using request parameter
+	5. SemesterController
+		- http://localhost:9494/api/private/semester/addCourse - give id using request parameter
+		- http://localhost:9494/api/private/semester/getSemester - give id using request parameter
+	

@@ -48,6 +48,9 @@ public class AdminEntity {
 
     LocalDateTime otpExpirationTime;
 
+    @Column
+    String token;
+
     public UUID getAdminId() {
         return adminId;
     }
@@ -134,5 +137,13 @@ public class AdminEntity {
 
     public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
         this.otpExpirationTime = otpExpirationTime;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -67,6 +67,9 @@ public class StudentEntity {
 	@Column(nullable = false)
 	LocalDateTime createAt;
 
+	@Column
+	String token;
+
 	public UUID getStudentId() {
 		return studentId;
 	}
@@ -193,6 +196,14 @@ public class StudentEntity {
 
 	public void setCreateAt(LocalDateTime createAt) {
 		this.createAt = createAt;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

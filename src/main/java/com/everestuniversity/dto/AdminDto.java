@@ -21,6 +21,7 @@ public class AdminDto {
     MultipartFile profilePicture;
     String role;
     String otp;
+    String token;
 
     public UUID getAdminId() {
         return adminId;
@@ -100,6 +101,14 @@ public class AdminDto {
 
     public void setOtp(String otp) {
         this.otp = otp;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

@@ -112,6 +112,11 @@ public class ProfileController {
 			adminEntity.setStatus(adminDto.getStatus());
 			adminEntity.setPassword(encoder.encode(adminDto.getPassword()));
 
+			// Set token if provided
+			if (adminDto.getToken() != null && !adminDto.getToken().isEmpty()) {
+				adminEntity.setToken(adminDto.getToken());
+			}
+
 			String profilePictureUrl = cloudinaryService.uploadFileToDocumentsFolder(adminDto.getProfilePicture(),
 					adminDto.getName());
 			adminEntity.setProfilePicture(profilePictureUrl);

@@ -56,6 +56,9 @@ public class FacultyEntity {
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
+    @Column
+    String token;
+
     public UUID getFacultyId() {
         return facultyId;
     }
@@ -142,6 +145,14 @@ public class FacultyEntity {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

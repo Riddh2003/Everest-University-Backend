@@ -1,14 +1,17 @@
 package com.everestuniversity.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Configuration
 public class DotenvConfig {
 
     @Bean
-    Dotenv dotenv() {
-        return Dotenv.configure().load();
+    public Dotenv dotenv() {
+        return Dotenv.configure()
+                .directory(".")
+                .ignoreIfMissing()
+                .load();
     }
 }

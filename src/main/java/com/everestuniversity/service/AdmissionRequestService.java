@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.everestuniversity.dto.AdmissionRequestDTO;
 import com.everestuniversity.entity.AdmissionRequest;
@@ -16,6 +18,7 @@ import com.everestuniversity.repository.AdmissionRepository;
 import com.everestuniversity.repository.AdmissionRequestRepository;
 
 @Service
+@Transactional
 public class AdmissionRequestService {
 
     @Autowired
@@ -27,7 +30,8 @@ public class AdmissionRequestService {
     @Autowired
     private AdmissionRepository admissionRepo;
 
-    public AdmissionRequest mapDtoToEntity(AdmissionRequestDTO admissionRequestDTO, String tenthPath, String twelthPath) {
+    public AdmissionRequest mapDtoToEntity(AdmissionRequestDTO admissionRequestDTO, String tenthPath,
+            String twelthPath) {
         AdmissionRequest request = new AdmissionRequest();
         request.setSurName(admissionRequestDTO.getSurName());
         request.setFirstName(admissionRequestDTO.getFirstName());
@@ -49,7 +53,7 @@ public class AdmissionRequestService {
 
     // Save file to cloudinary and return file URL
     public String saveFilePath(MultipartFile file, String fullName) throws IOException {
-        try{
+        try {
             String fileUrl = cloudinaryService.uploadFileToDocumentsFolder(file, fullName);
             return fileUrl;
         } catch (IOException e) {
@@ -57,8 +61,17 @@ public class AdmissionRequestService {
         }
     }
 
+    public boolean existsByEmail(String email) {
+        return admissionRequestRepo.existsByEmail(email);
+    }
+
+    @Transactional
     public void saveRegistration(AdmissionRequest request) {
-        admissionRequestRepo.save(request);
+        try {
+            admissionRequestRepo.save(request);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Email already registered", e);
+        }
     }
 
     // Approve registration
@@ -83,11 +96,12 @@ public class AdmissionRequestService {
     }
 
     // Save registration to admission table
-    public void saveAdmission(UUID registrationId){
+    public void saveAdmission(UUID registrationId) {
         AdmissionRequest registration = admissionRequestRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
         AdmisstionEntity admission = new AdmisstionEntity();
-        admission.setFullName(registration.getSurName() + " " + registration.getFirstName() + " " + registration.getMiddleName());
+        admission.setFullName(
+                registration.getSurName() + " " + registration.getFirstName() + " " + registration.getMiddleName());
         admission.setEmail(registration.getEmail());
         admission.setMobileNo(registration.getMobileNo());
         admission.setGender(registration.getGender());

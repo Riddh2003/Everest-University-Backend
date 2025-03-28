@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@Table(name = "admissionRequest")
+@Table(name = "admission_request")
 public class AdmissionRequest {
 
     @Id

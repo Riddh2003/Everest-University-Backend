@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.everestuniversity.dto.AdminDto;
 import com.everestuniversity.entity.AdminEntity;
+import com.everestuniversity.entity.FacultyEntity;
 import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.repository.AdminRepository;
+import com.everestuniversity.repository.FacultyRepository;
 import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.CloudinaryService;
 
@@ -35,6 +37,9 @@ public class ProfileController {
 
 	@Autowired
 	BCryptPasswordEncoder encoder;
+
+	@Autowired
+	FacultyRepository facultyRepository;
 
 	@Autowired
 	CloudinaryService cloudinaryService;
@@ -56,6 +61,15 @@ public class ProfileController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No users found...");
 		}
 		return ResponseEntity.ok(null);
+	}
+
+	@GetMapping("/getallfaculty")
+	public ResponseEntity<?> getAllFaculty() {
+		List<FacultyEntity> facultyEntity = facultyRepository.findAll();
+		if (facultyEntity.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No faculty found...");
+		}
+		return ResponseEntity.ok(facultyEntity);
 	}
 
 	@PutMapping("/updatestudent")

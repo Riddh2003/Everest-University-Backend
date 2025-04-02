@@ -11,21 +11,4 @@ import lombok.experimental.FieldDefaults;
 public class EventRegistrationDto {
     UUID eventId;
     UUID userId;
-
-    public UUID getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
 }

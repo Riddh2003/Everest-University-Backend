@@ -22,14 +22,14 @@ import com.everestuniversity.filter.JwtAuthenticationFilter;
 public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.authorizeHttpRequests(
+						auth -> auth.requestMatchers("/api/**","/swagger-ui/**", "/swagger-ui.html")
+								.permitAll().anyRequest().authenticated())
 				.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/**").permitAll()
-						.anyRequest().authenticated())
+	            .formLogin(form -> form.disable())
+	            .httpBasic(httpBasic -> httpBasic.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
 		return http.build();
 	}
 

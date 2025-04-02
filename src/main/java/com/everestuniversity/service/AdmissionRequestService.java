@@ -16,19 +16,23 @@ import com.everestuniversity.entity.AdmissionRequest;
 import com.everestuniversity.entity.AdmisstionEntity;
 import com.everestuniversity.repository.AdmissionRepository;
 import com.everestuniversity.repository.AdmissionRequestRepository;
+import com.everestuniversity.repository.StudentRepository;
 
 @Service
 @Transactional
 public class AdmissionRequestService {
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    CloudinaryService cloudinaryService;
 
     @Autowired
-    private AdmissionRequestRepository admissionRequestRepo;
+    AdmissionRequestRepository admissionRequestRepo;
 
     @Autowired
-    private AdmissionRepository admissionRepo;
+    AdmissionRepository admissionRepo;
+    
+    @Autowired
+    StudentRepository studentRepository;
 
     public AdmissionRequest mapDtoToEntity(AdmissionRequestDTO admissionRequestDTO, String tenthPath,
             String twelthPath) {

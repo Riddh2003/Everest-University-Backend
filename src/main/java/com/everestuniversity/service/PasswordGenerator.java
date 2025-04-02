@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasswordGenerator {
 
-
-
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";

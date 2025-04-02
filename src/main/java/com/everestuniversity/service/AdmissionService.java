@@ -1,5 +1,6 @@
 package com.everestuniversity.service;
 
+import java.io.Console;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -31,7 +32,9 @@ public class AdmissionService {
     // Method to approve registration, transfer data to StudentEntity, and delete
     // from RegistrationEntity
     public void approveAdmission(UUID registrationId) {
+    	System.out.println("approve");
         AdmissionRequest request = admissionRequesrRepo.findById(registrationId)
+        		
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
         String encryptedPassword = encoder.encode(PasswordGenerator.generatePassword());
         // Create a new StudentEntity

@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/public/admission")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AdmissionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AdmissionController.class);

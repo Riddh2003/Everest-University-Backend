@@ -1,6 +1,5 @@
 package com.everestuniversity.service;
 
-import java.io.Console;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,9 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.everestuniversity.entity.AdmissionRequest;
+import com.everestuniversity.entity.AdmisstionEntity;
 import com.everestuniversity.entity.StudentEntity;
+import com.everestuniversity.repository.AdmissionRepository;
 import com.everestuniversity.repository.AdmissionRequestRepository;
-import com.everestuniversity.repository.StudentProfileRepository;
 import com.everestuniversity.repository.StudentRepository;
 
 @Service
@@ -29,14 +29,17 @@ public class AdmissionService {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    AdmissionRepository admissionRepo;
+
     // Method to approve registration, transfer data to StudentEntity, and delete
     // from RegistrationEntity
     public void approveAdmission(UUID registrationId) {
     	System.out.println("approve");
         AdmissionRequest request = admissionRequesrRepo.findById(registrationId)
-        		
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
         String encryptedPassword = encoder.encode(PasswordGenerator.generatePassword());
+        System.out.println(request);
         // Create a new StudentEntity
         StudentEntity student = new StudentEntity();
         student.setSurName(request.getSurName());
@@ -61,4 +64,13 @@ public class AdmissionService {
         
     }
 
+    public boolean isEligibleForApproval(UUID admissionId) {
+        AdmisstionEntity admission = admissionRepo.findById(admissionId)
+                .orElse(null);
+        if (!admission.getStatus().equals("APPROVED")) {
+            return true; // New admission, eligible for approval
+        }
+        String status = admission.getStatus();
+        return status == null || !status.equalsIgnoreCase("APPROVED");
+    }
 }

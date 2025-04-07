@@ -31,7 +31,7 @@ public class MailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreplyonthisemail7@gmail.com");
         message.setTo(student.getEmail());
-        message.setSubject("🎓 Welcome to [Your Institution Name]! Your Enrollment Details");
+        message.setSubject("🎓 Welcome to Everest University! Your Enrollment Details");
         String emailBody = "Hi " + fullName + ",\n\n" +
                 "Congratulations on successfully completing your admission to " + student.getDegreeName() +
                 " at Everest University!\n\n" +
@@ -53,6 +53,7 @@ public class MailService {
         message.setText(emailBody);
 
         mailSender.send(message);
+        System.out.println("mailsend");
 
     }
 

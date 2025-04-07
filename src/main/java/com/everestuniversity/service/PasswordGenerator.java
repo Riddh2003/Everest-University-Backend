@@ -1,9 +1,6 @@
 package com.everestuniversity.service;
 
 import java.security.SecureRandom;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,11 +47,5 @@ public class PasswordGenerator {
             characters[index] = temp;
         }
         return new String(characters);
-    }
-
-    public static void main(String[] args) {
-        // Example usage
-        String password = generatePassword();
-        System.out.println("Generated Password: " + password);
     }
 }

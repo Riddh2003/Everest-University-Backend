@@ -23,15 +23,6 @@ public class EnrollmentIdGenerator {
         String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 4).toUpperCase();
 
         // Combine program code, timestamp, and random part to create the enrollment ID
-        return programCode.toUpperCase() + "-" + timestamp + "-" + randomPart;
-    }
-
-    public static void main(String[] args) {
-        // Example usage for different programs
-        String bcaEnrollmentId = generateEnrollmentId("BCA");
-        String bscItEnrollmentId = generateEnrollmentId("BSC.IT");
-
-        System.out.println("Generated BCA Enrollment ID: " + bcaEnrollmentId);
-        System.out.println("Generated BSC.IT Enrollment ID: " + bscItEnrollmentId);
+        return programCode.toUpperCase().trim() + "-" + timestamp + "-" + randomPart;
     }
 }

@@ -82,10 +82,26 @@ public class AdmissionRequestService {
     public void approveRegistration(UUID registrationId) {
         AdmissionRequest registration = admissionRequestRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
+        
         AdmisstionEntity admission = admissionRepo.findByEmail(registration.getEmail());
+        if (admission != null) {
+            throw new RuntimeException("Admission already exists"); 
+        }
+        
+        admission = new AdmisstionEntity();
+        // Set all required fields from registration to admission
+        admission.setFullName(
+                registration.getSurName() + " " + registration.getFirstName() + " " + registration.getMiddleName());
+        admission.setEmail(registration.getEmail());
+        admission.setMobileNo(registration.getMobileNo());
+        admission.setGender(registration.getGender());
+        admission.setDegree(registration.getDegree() + " " + registration.getDegreeName());
         admission.setStatus("APPROVED");
         admission.setCreatedAt(LocalDateTime.now());
+        
+        // Save the complete admission entity
         admissionRepo.save(admission);
+        System.out.println("admission saved");
     }
 
     // Reject registration
@@ -95,6 +111,7 @@ public class AdmissionRequestService {
         AdmisstionEntity admission = admissionRepo.findByEmail(registration.getEmail());
         admission.setStatus("REJECTED");
         admission.setCreatedAt(LocalDateTime.now());
+        admissionRequestRepo.delete(registration);
 
         admissionRepo.save(admission);
     }

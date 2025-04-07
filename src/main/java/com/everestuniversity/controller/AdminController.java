@@ -29,7 +29,6 @@ import com.everestuniversity.service.UUIDService;
 
 @RestController
 @RequestMapping("/api/private/admin")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AdminController {
 
 	@Autowired
@@ -83,12 +82,11 @@ public class AdminController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Remove "0x" prefix if present
             String sanitizedId = registrationId.startsWith("0x") ? registrationId.substring(2) : registrationId;
             UUID uuid = UUIDService.formatUuid(sanitizedId);
-
+            
             Optional<AdmissionRequest> op = admissionRequestRepo.findById(uuid);
-            if (!op.isPresent()) {
+            if (!op.isEmpty()) {
                 response.put("message", "Registration not found");
                 response.put("success", false);
                 return ResponseEntity.badRequest().body(response);
@@ -96,19 +94,28 @@ public class AdminController {
 
             AdmissionRequest registration = op.get();
             
-            // Approve the admission
+            // First approve the registration
             admissionRequestService.approveRegistration(uuid);
+            
+            // Then approve the admission
             admissionService.approveAdmission(uuid);
-
-            // Send enrollment email with credentials
-            mailService.sendEnrollementAndPassword(registration.getEmail());
-
-            // Delete the admission request after approval
-            admissionRequestRepo.delete(registration);
+            
+            try {
+                // Send enrollment email with credentials
+                mailService.sendEnrollementAndPassword(registration.getEmail());
+                
+                // Only delete the admission request if email is sent successfully
+                admissionRequestRepo.delete(registration);
+            } catch (Exception emailError) {
+                // Log the email error but don't fail the whole process
+                System.err.println("Email sending failed: " + emailError.getMessage());
+                response.put("warning", "Admission approved but email notification failed");
+            }
 
             response.put("message", "Admission approved successfully");
             response.put("success", true);
             return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             response.put("message", "Failed to approve admission");
             response.put("success", false);

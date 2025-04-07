@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.entity.StudentProfileEntity;
-import com.everestuniversity.repository.StudentProfileRepository;
 import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.StudentService;
 
@@ -26,9 +25,6 @@ public class StudentController {
 
 	@Autowired
 	private StudentRepository studentRepo;
-
-	@Autowired
-	private StudentProfileRepository studentProfileRepo;
 
 	@Autowired
 	private StudentService studentService;

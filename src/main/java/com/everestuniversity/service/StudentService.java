@@ -45,7 +45,7 @@ public class StudentService {
 		String sanitizedId = studentProfileId.startsWith("0x") ? studentProfileId.substring(2) : studentProfileId;
 		UUID uuid = UUIDService.formatUuid(sanitizedId);
 
-		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudent_StudentId(uuid);
+		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudentId(uuid);
 		if (studentProfile.isEmpty()) {
 			return null;
 		}
@@ -53,34 +53,52 @@ public class StudentService {
 	}
 
 	public void setStudentProfile(String email) {
+		System.out.println("set profile");
+        try {
+            Optional<StudentEntity> op = studentRepo.findByEmail(email);
+            if (!op.isEmpty()) {
+                throw new RuntimeException("Student not found with email: " + email);
+            }
 
-		Optional<StudentEntity> op = studentRepo.findByEmail(email);
-		if (op.isPresent()) {
-			StudentEntity student = op.get();
-			System.out.println("Stduent profile : " + student);
-			String fullname = student.getSurName() + " " + student.getFirstName() + " " + student.getMiddleName();
-			System.out.println("Fullname : " + fullname);
-			StudentProfileEntity studentProfile = new StudentProfileEntity();
-			studentProfile.setFirstname(student.getFirstName());
-			studentProfile.setMiddlename(student.getMiddleName());
-			studentProfile.setSurname(student.getSurName());
-			studentProfile.setFullname(fullname);
-			studentProfile.setDateOfBirth(student.getDateOfBirth());
-			studentProfile.setGender(student.getGender());
-			studentProfile.setMobileNo(student.getMobileNo());
-			studentProfile.setEmail(student.getEmail());
-			studentProfile.setMaritalStatus("N/A");
-			studentProfile.setAddress("N/A");
-			studentProfile.setArea("N/A");
-			studentProfile.setPincode("N/A");
-			studentProfile.setState("N/A");
-			studentProfile.setCity("N/A");
-			studentProfile.setStudent(student);
-			studentProfile.setCreateAt(LocalDateTime.now());
+            StudentEntity student = op.get();
+            
+            // Check if profile already exists
+            Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByStudentId(student.getStudentId());
+            if (existingProfile.isEmpty()) {
+                throw new RuntimeException("Profile already exists for student: " + email);
+            }
 
-			studentProfileRepo.save(studentProfile);
-		}
-	}
+            // Build full name properly handling null values
+            StringBuilder fullNameBuilder = new StringBuilder();
+            if (student.getSurName() != null) fullNameBuilder.append(student.getSurName()).append(" ");
+            if (student.getFirstName() != null) fullNameBuilder.append(student.getFirstName()).append(" ");
+            if (student.getMiddleName() != null) fullNameBuilder.append(student.getMiddleName());
+            String fullname = fullNameBuilder.toString();
+
+            StudentProfileEntity studentProfile = new StudentProfileEntity();
+            studentProfile.setFirstname(student.getFirstName() != null ? student.getFirstName() : "");
+            studentProfile.setMiddlename(student.getMiddleName() != null ? student.getMiddleName() : "");
+            studentProfile.setSurname(student.getSurName() != null ? student.getSurName() : "");
+            studentProfile.setFullname(fullname);
+            studentProfile.setDateOfBirth(student.getDateOfBirth());
+            studentProfile.setGender(student.getGender() != null ? student.getGender() : "");
+            studentProfile.setMobileNo(student.getMobileNo() != null ? student.getMobileNo() : "");
+            studentProfile.setEmail(student.getEmail());
+            studentProfile.setMaritalStatus("N/A");
+            studentProfile.setAddress("N/A");
+            studentProfile.setArea("N/A");
+            studentProfile.setPincode("N/A");
+            studentProfile.setState("N/A");
+            studentProfile.setCity("N/A");
+            studentProfile.setNationality("N/A");
+            studentProfile.setStudent(student);
+            studentProfile.setCreateAt(LocalDateTime.now());
+
+            studentProfileRepo.save(studentProfile);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create student profile: " + e.getMessage());
+        }
+    }
 
 	public StudentProfileEntity updateProfile(StudentProfileEntity existingProfile, StudentProfileEntity newProfile) {
 

@@ -3,11 +3,13 @@ package com.everestuniversity.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -18,9 +20,9 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "students")
 public class StudentEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	UUID studentId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    UUID studentId;
 
 	@Column(unique = true)
 	String enrollmentId;
@@ -67,6 +69,9 @@ public class StudentEntity {
 	@Column(nullable = false)
 	LocalDateTime createAt;
 
-	@Column
+	@Column(nullable = true)
 	String token;
+
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    StudentProfileEntity studentProfile;
 }

@@ -1,5 +1,6 @@
 package com.everestuniversity.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +10,6 @@ import com.everestuniversity.entity.AdmissionRequest;
 
 @Repository
 public interface AdmissionRequestRepository extends JpaRepository<AdmissionRequest, UUID> {
-    boolean existsByEmail(String email);
+
+	Optional<AdmissionRequest> findByEmail(String email);
 }

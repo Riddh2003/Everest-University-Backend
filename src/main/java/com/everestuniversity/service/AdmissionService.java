@@ -56,6 +56,7 @@ public class AdmissionService {
         student.setDegreeName(request.getDegreeName());
         student.setCurrentSem(1);
         student.setCurrentYear(1);
+        student.setToken("N/A");
         student.setCreateAt(LocalDateTime.now());
 
         studentRepo.save(student);

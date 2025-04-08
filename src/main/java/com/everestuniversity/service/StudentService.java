@@ -45,7 +45,7 @@ public class StudentService {
 		String sanitizedId = studentProfileId.startsWith("0x") ? studentProfileId.substring(2) : studentProfileId;
 		UUID uuid = UUIDService.formatUuid(sanitizedId);
 
-		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudentId(uuid);
+		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudent_StudentId(uuid);
 		if (studentProfile.isEmpty()) {
 			return null;
 		}
@@ -63,7 +63,7 @@ public class StudentService {
             StudentEntity student = op.get();
             
             // Check if profile already exists
-            Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByStudentId(student.getStudentId());
+            Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByStudent_StudentId(student.getStudentId());
             if (existingProfile.isEmpty()) {
                 throw new RuntimeException("Profile already exists for student: " + email);
             }

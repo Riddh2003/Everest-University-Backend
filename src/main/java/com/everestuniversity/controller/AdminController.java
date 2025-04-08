@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.everestuniversity.dto.StudentDto;
 import com.everestuniversity.entity.AdminEntity;
 import com.everestuniversity.entity.AdmissionRequest;
+import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.repository.AdminRepository;
 import com.everestuniversity.repository.AdmissionRequestRepository;
+import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.AdmissionRequestService;
 import com.everestuniversity.service.AdmissionService;
 import com.everestuniversity.service.MailService;
@@ -45,6 +47,9 @@ public class AdminController {
 
 	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private StudentRepository studentRepository;
 
 	@GetMapping("/getalladmin")
 	public ResponseEntity<?> getAllAdmin() {
@@ -75,6 +80,7 @@ public class AdminController {
         HashMap<String, Object> response = new HashMap<>();
         try {
             String registrationId = studentDto.getRegistrationId();
+            System.out.println("Received registration ID: " + registrationId);
 
             if (registrationId == null || registrationId.isEmpty()) {
                 response.put("message", "Registration ID is required");
@@ -82,39 +88,48 @@ public class AdminController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            String sanitizedId = registrationId.startsWith("0x") ? registrationId.substring(2) : registrationId;
-            UUID uuid = UUIDService.formatUuid(sanitizedId);
-            
-            Optional<AdmissionRequest> op = admissionRequestRepo.findById(uuid);
-            if (!op.isEmpty()) {
-                response.put("message", "Registration not found");
+            // Validate UUID format
+            try {
+                String sanitizedId = registrationId.startsWith("0x") ? registrationId.substring(2) : registrationId;
+                UUID uuid = UUIDService.formatUuid(sanitizedId);
+                
+                Optional<AdmissionRequest> op = admissionRequestRepo.findById(uuid);
+                if (!op.isPresent()) {
+                    response.put("message", "Registration not found for ID: " + registrationId);
+                    response.put("success", false);
+                    return ResponseEntity.badRequest().body(response);
+                }
+
+                AdmissionRequest registration = op.get();
+                
+                Optional<StudentEntity> optional = studentRepository.findByEmail(registration.getEmail());
+                // Check if student already exists with this email
+                if (optional.isPresent()) {
+                    response.put("message", "Student with this email already exists");
+                    response.put("success", false);
+                    return ResponseEntity.badRequest().body(response);
+                }
+                
+                // Process approval steps     
+                try {
+                    admissionRequestService.approveRegistration(uuid);
+                    admissionService.approveAdmission(uuid);
+                    mailService.sendEnrollementAndPassword(registration.getEmail());
+                    admissionRequestRepo.delete(registration);
+                } catch (Exception processError) {
+                    throw new RuntimeException("Error during approval process: " + processError.getMessage());
+                }
+
+                response.put("message", "Admission approved successfully");
+                response.put("success", true);
+                return ResponseEntity.ok(response);
+                
+            } catch (IllegalArgumentException e) {
+                response.put("message", "Invalid registration ID format");
                 response.put("success", false);
+                response.put("error", e.getMessage());
                 return ResponseEntity.badRequest().body(response);
             }
-
-            AdmissionRequest registration = op.get();
-            
-            // First approve the registration
-            admissionRequestService.approveRegistration(uuid);
-            
-            // Then approve the admission
-            admissionService.approveAdmission(uuid);
-            
-            try {
-                // Send enrollment email with credentials
-                mailService.sendEnrollementAndPassword(registration.getEmail());
-                
-                // Only delete the admission request if email is sent successfully
-                admissionRequestRepo.delete(registration);
-            } catch (Exception emailError) {
-                // Log the email error but don't fail the whole process
-                System.err.println("Email sending failed: " + emailError.getMessage());
-                response.put("warning", "Admission approved but email notification failed");
-            }
-
-            response.put("message", "Admission approved successfully");
-            response.put("success", true);
-            return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             response.put("message", "Failed to approve admission");
@@ -167,7 +182,7 @@ public class AdminController {
 		HashMap<String, Object> response = new HashMap<>();
 		try {
 			List<AdmissionRequest> admissions = admissionRequestRepo.findAll();
-
+            System.out.println(admissions);
 			if (admissions.isEmpty()) {
 				response.put("success", false);
 				response.put("message", "No admission requests found");

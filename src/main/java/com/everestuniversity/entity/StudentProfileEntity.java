@@ -14,15 +14,19 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+@Entity
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@Table(name = "studentprofile")
-@Entity
+@Table(name = "student_profiles")
 public class StudentProfileEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID profileId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	UUID profileId;
+    @OneToOne
+    @JoinColumn(name = "studentId")
+    StudentEntity student;
 
 	@Column(nullable = false)
 	String firstname;
@@ -71,8 +75,4 @@ public class StudentProfileEntity {
 
 	@Column(nullable = false)
 	LocalDateTime createAt;
-
-	@OneToOne
-	@JoinColumn(name = "studentId")
-	StudentEntity student;
 }

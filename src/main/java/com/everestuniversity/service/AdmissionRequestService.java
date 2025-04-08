@@ -3,6 +3,7 @@ package com.everestuniversity.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class AdmissionRequestService {
     }
 
     public boolean existsByEmail(String email) {
-        return admissionRequestRepo.existsByEmail(email);
+        return admissionRequestRepo.findByEmail(email).isPresent();
     }
 
     @Transactional
@@ -80,15 +81,16 @@ public class AdmissionRequestService {
 
     // Approve registration
     public void approveRegistration(UUID registrationId) {
+        System.out.println("Registration id :"+registrationId);
         AdmissionRequest registration = admissionRequestRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
         
-        AdmisstionEntity admission = admissionRepo.findByEmail(registration.getEmail());
-        if (admission != null) {
+        Optional<AdmisstionEntity> op = admissionRepo.findByEmail(registration.getEmail());
+        if (op.isPresent()) {
             throw new RuntimeException("Admission already exists"); 
         }
         
-        admission = new AdmisstionEntity();
+        AdmisstionEntity admission = new AdmisstionEntity();
         // Set all required fields from registration to admission
         admission.setFullName(
                 registration.getSurName() + " " + registration.getFirstName() + " " + registration.getMiddleName());
@@ -108,7 +110,8 @@ public class AdmissionRequestService {
     public void rejectRegistration(UUID registrationId) {
         AdmissionRequest registration = admissionRequestRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
-        AdmisstionEntity admission = admissionRepo.findByEmail(registration.getEmail());
+        Optional<AdmisstionEntity> op = admissionRepo.findByEmail(registration.getEmail());
+        AdmisstionEntity admission = op.get();
         admission.setStatus("REJECTED");
         admission.setCreatedAt(LocalDateTime.now());
         admissionRequestRepo.delete(registration);

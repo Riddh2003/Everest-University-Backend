@@ -8,7 +8,6 @@ import java.util.Set;
 import java.security.Key;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;

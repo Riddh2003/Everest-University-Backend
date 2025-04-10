@@ -19,7 +19,7 @@ public class MailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEnrollementAndPassword(String email) {
+    public void sendEnrollementAndPassword(String email, String password) {
 
         Optional<StudentEntity> op = studentRepo.findByEmail(email);
         if (op.isEmpty()) {
@@ -37,7 +37,7 @@ public class MailService {
                 " at Everest University!\n\n" +
                 "Here are your enrollment details:\n" +
                 "- Enrollment ID: " + student.getEnrollmentId() + "\n" +
-                "- Password: " + student.getPassword() + "\n\n" +
+                "- Password: " + password + "\n\n" +
                 "Please keep this information secure, as you will need it to log in to the student portal and access your academic resources.\n\n"
                 +
                 "Next Steps:\n" +

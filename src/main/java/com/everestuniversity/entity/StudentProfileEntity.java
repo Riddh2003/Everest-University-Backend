@@ -28,6 +28,9 @@ public class StudentProfileEntity {
     @JoinColumn(name = "studentId")
     StudentEntity student;
 
+    @Column(nullable = false,unique = true)
+	String enrollmentId;
+
 	@Column(nullable = false)
 	String firstname;
 

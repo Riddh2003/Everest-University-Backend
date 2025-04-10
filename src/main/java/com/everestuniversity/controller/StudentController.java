@@ -2,17 +2,17 @@ package com.everestuniversity.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.entity.StudentProfileEntity;
@@ -24,64 +24,50 @@ import com.everestuniversity.service.StudentService;
 public class StudentController {
 
 	@Autowired
-	private StudentRepository studentRepo;
-
-	@Autowired
 	private StudentService studentService;
 
+	@Autowired
+	StudentRepository studentRepository;
+
+	@GetMapping("/getstudent")
+	public ResponseEntity<?> getStudent(@RequestParam String enrollmentId) {
+	    // Find student by email
+	    Optional<StudentEntity> optional = studentRepository.findByEnrollmentId(enrollmentId);
+	    if (!optional.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found.");
+	    }
+	    StudentEntity student = optional.get();
+	    System.out.println(student);
+	    return ResponseEntity.status(HttpStatus.FOUND).body(student);
+	}
+
 	@GetMapping("/getallstudent")
-	public ResponseEntity<?> getAllStudent() {
-		HashMap<String, Object> response = new HashMap<>();
-		List<StudentEntity> students = studentRepo.findAll();
-		response.put("success", true);
-		response.put("message", "Students fetched successfully");
-		response.put("data", students);
-		return ResponseEntity.ok(response);
-	}
-
-	@GetMapping("/getstudentbyid")
-	public ResponseEntity<?> getStudentById(@RequestParam("studentId") String studentId) {
-		HashMap<String, Object> response = new HashMap<>();
-		StudentEntity student = studentService.getStudentById(studentId);
-		if (student != null) {
-			response.put("success", true);
-			response.put("message", "Student fetched successfully");
-			response.put("data", student);
-			return ResponseEntity.ok(response);
+	public ResponseEntity<?> getAllUser() {
+		List<StudentEntity> userEntity = studentRepository.findAll();
+		if (userEntity.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No users found...");
 		}
-		response.put("success", false);
-		response.put("message", "Student not found");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(null);
 	}
 
-	@PutMapping("/updatestudent")
-	public ResponseEntity<?> updateStudent(@RequestParam("studentId") String studentID,
-			@RequestPart(value = "file", required = false) MultipartFile file,
-			@RequestPart(value = "student", required = false) String studentJson) {
-		return null;
-	}
-
-	// ---------------------------------------------------------------------------------------------------
-
-	// Student Profile handling start here
 
 	@GetMapping("/getstudentprofie")
-	public ResponseEntity<?> getStudentProfile(@RequestParam String studentId) {
+	public ResponseEntity<?> getStudentProfile(@RequestParam String enrollmentId) {
 		HashMap<String, Object> response = new HashMap<>();
-		if (studentService.getStudentProfile(studentId) == null) {
+		if (studentService.getStudentProfile(enrollmentId) == null) {
 			response.put("success", false);
 			response.put("message", "StudentProfile not found");
 			return ResponseEntity.ok(response);
 		}
 
-		StudentProfileEntity profile = studentService.getStudentProfile(studentId);
+		StudentProfileEntity profile = studentService.getStudentProfile(enrollmentId);
 		response.put("success", true);
 		response.put("message", "Studen Profile fetched successfully");
 		response.put("data", profile);
 		return ResponseEntity.ok(response);
 	}
 
-	@PutMapping("updateprofile")
+	@PutMapping("/updateprofile")
 	public ResponseEntity<?> updateStudentProfile(@RequestParam String profileId,
 			@RequestBody StudentProfileEntity newProfile) {
 		HashMap<String, Object> response = new HashMap<>();

@@ -30,6 +30,9 @@ public class AdmissionService {
     private StudentService studentService;
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     AdmissionRepository admissionRepo;
 
     // Method to approve registration, transfer data to StudentEntity, and delete
@@ -38,7 +41,8 @@ public class AdmissionService {
     	System.out.println("approve");
         AdmissionRequest request = admissionRequesrRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
-        String encryptedPassword = encoder.encode(PasswordGenerator.generatePassword());
+        String password = PasswordGenerator.generatePassword();
+        String encryptedPassword = encoder.encode(password);
         System.out.println(request);
         // Create a new StudentEntity
         StudentEntity student = new StudentEntity();
@@ -60,7 +64,7 @@ public class AdmissionService {
         student.setCreateAt(LocalDateTime.now());
 
         studentRepo.save(student);
-        
+        mailService.sendEnrollementAndPassword(request.getEmail(), password);
         studentService.setStudentProfile(request.getEmail());
         
     }

@@ -21,6 +21,9 @@ public class AuthService {
 	
 	@Autowired
 	AdminRepository adminRepo;
+
+	@Autowired
+	MailService mailService;
 	
 	@Autowired
 	BCryptPasswordEncoder encoder;
@@ -45,7 +48,7 @@ public class AuthService {
 	public ResponseEntity<?> changePasswordForStudent(String enrollmentId, String password, String newOtp, String  oldOtp) {
 		
 		HashMap<String, Object> response = new HashMap<>();
-		
+		System.out.println("Enrollment id: " + enrollmentId);
 		Optional<StudentEntity> op = studentRepo.findByEnrollmentId(enrollmentId);
 	    
 	      if (op.isPresent()) {
@@ -57,6 +60,7 @@ public class AuthService {
 	          if (student.getEnrollmentId().equals(enrollmentId)) {
 	        	  
 	              if (newOtp.equals(oldOtp)) {
+						mailService.sendEnrollementAndPassword(student.getEmail(), password);
 	                  student.setPassword(encoder.encode(password));
 	                  studentRepo.save(student);
 	                  response.put("success", true);

@@ -26,7 +26,6 @@ import com.everestuniversity.repository.AdmissionRequestRepository;
 import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.AdmissionRequestService;
 import com.everestuniversity.service.AdmissionService;
-import com.everestuniversity.service.MailService;
 import com.everestuniversity.service.UUIDService;
 
 @RestController
@@ -44,9 +43,6 @@ public class AdminController {
 
 	@Autowired
 	private AdmissionRequestRepository admissionRequestRepo;
-
-	@Autowired
-	private MailService mailService;
 
 	@Autowired
 	private StudentRepository studentRepository;
@@ -114,7 +110,6 @@ public class AdminController {
                 try {
                     admissionRequestService.approveRegistration(uuid);
                     admissionService.approveAdmission(uuid);
-                    mailService.sendEnrollementAndPassword(registration.getEmail());
                     admissionRequestRepo.delete(registration);
                 } catch (Exception processError) {
                     throw new RuntimeException("Error during approval process: " + processError.getMessage());

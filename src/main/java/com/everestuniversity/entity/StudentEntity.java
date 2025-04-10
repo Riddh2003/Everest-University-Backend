@@ -20,11 +20,8 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "students")
 public class StudentEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    UUID studentId;
-
-	@Column(unique = true)
+	@Id
+	@Column(unique = true,nullable = false)
 	String enrollmentId;
 
 	@Column(nullable = false)

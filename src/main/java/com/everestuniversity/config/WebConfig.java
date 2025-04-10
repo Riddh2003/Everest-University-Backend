@@ -9,10 +9,10 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**") // Apply CORS globally or restrict as needed
-				.allowedOrigins("http://localhost:5173/") // Allow only this origin
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Include OPTIONS
-				.allowedHeaders("*") // Allow all headers if needed
-				.allowCredentials(true); // Needed if sending cookies or auth headers
+		registry.addMapping("/**")
+				.allowedOrigins("http://localhost:5173") // Your frontend URL
+				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedHeaders("*")
+				.allowCredentials(true);
 	}
 }

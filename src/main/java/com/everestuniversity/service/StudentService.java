@@ -42,10 +42,8 @@ public class StudentService {
 	}
 
 	public StudentProfileEntity getStudentProfile(String studentProfileId) {
-		String sanitizedId = studentProfileId.startsWith("0x") ? studentProfileId.substring(2) : studentProfileId;
-		UUID uuid = UUIDService.formatUuid(sanitizedId);
 
-		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudent_StudentId(uuid);
+		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByEnrollmentId(studentProfileId);
 		if (studentProfile.isEmpty()) {
 			return null;
 		}
@@ -56,14 +54,14 @@ public class StudentService {
 		System.out.println("set profile");
         try {
             Optional<StudentEntity> op = studentRepo.findByEmail(email);
-            if (!op.isEmpty()) {
+            if (!op.isPresent()) {
                 throw new RuntimeException("Student not found with email: " + email);
             }
 
             StudentEntity student = op.get();
-            
+            System.out.println(student);
             // Check if profile already exists
-            Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByStudent_StudentId(student.getStudentId());
+            Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByEmail(email);
             if (existingProfile.isEmpty()) {
                 throw new RuntimeException("Profile already exists for student: " + email);
             }
@@ -76,6 +74,7 @@ public class StudentService {
             String fullname = fullNameBuilder.toString();
 
             StudentProfileEntity studentProfile = new StudentProfileEntity();
+			studentProfile.setEnrollmentId(student.getEnrollmentId());
             studentProfile.setFirstname(student.getFirstName() != null ? student.getFirstName() : "");
             studentProfile.setMiddlename(student.getMiddleName() != null ? student.getMiddleName() : "");
             studentProfile.setSurname(student.getSurName() != null ? student.getSurName() : "");

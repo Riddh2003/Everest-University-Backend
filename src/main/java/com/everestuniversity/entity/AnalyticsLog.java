@@ -34,37 +34,4 @@ public class AnalyticsLog {
     @Column(nullable = false)
     @CreationTimestamp
     LocalDateTime timestamp;
-
-    public UUID getLogId() {
-        return logId;
-    }
-
-    public void setLogId(UUID logId) {
-        this.logId = logId;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
 }

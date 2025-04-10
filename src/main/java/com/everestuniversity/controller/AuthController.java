@@ -79,34 +79,52 @@ public class AuthController {
     public ResponseEntity<?> studentLogin(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Optional<StudentEntity> op = studentRepository.findByEnrollmentId(loginRequest.getEnrollmentId());
-            System.out.println("Enrollment ID: " + loginRequest.getEnrollmentId());
-
+            System.out.println("Received login request: " + loginRequest);
+            
+            // Extract enrollmentId and password
+            String enrollmentId = loginRequest.getEnrollmentId();
+            String password = loginRequest.getPassword();
+            
+            System.out.println("Enrollment ID: " + enrollmentId);
+            
+            if (enrollmentId == null || password == null) {
+                response.put("success", false);
+                response.put("message", "Enrollment ID and password are required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            
+            Optional<StudentEntity> op = studentRepository.findByEnrollmentId(enrollmentId);
+    
             if (op.isEmpty()) {
                 response.put("success", false);
                 response.put("message", "EnrollmentId is not registered");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-
+    
             StudentEntity student = op.get();
-
-            if (!encoder.matches(loginRequest.getPassword(), student.getPassword())) {
+    
+            if (!encoder.matches(password, student.getPassword())) {
                 response.put("success", false);
                 response.put("message", "Incorrect password");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-
+    
             String token = jwtService.generateToken(student.getEmail(), "student");
-
+    
+            // Include student data in response
             response.put("success", true);
             response.put("message", "Login successful");
             response.put("token", token);
             response.put("role", "student");
-
+            response.put("enrollmentId", student.getEnrollmentId());
+            response.put("email", student.getEmail());
+            response.put("name", student.getFirstName() + " " + student.getSurName());
+    
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
                     .body(response);
         } catch (Exception e) {
+            e.printStackTrace();
             response.put("success", false);
             response.put("message", "Login failed: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -201,10 +219,10 @@ public class AuthController {
     }
 
     @PostMapping("/forgotpassword")
-    public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest, HttpSession session) {
+    public ResponseEntity<?> forgotPassword(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String otp = (String) session.getAttribute("otp");
+            String otp = loginRequest.getOtp();
             if (otp == null) {
                 response.put("success", false);
                 response.put("message", "No OTP found in session. Please request a new OTP.");

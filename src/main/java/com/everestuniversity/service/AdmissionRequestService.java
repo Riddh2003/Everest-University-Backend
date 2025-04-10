@@ -52,7 +52,7 @@ public class AdmissionRequestService {
         request.setProgram(admissionRequestDTO.getProgram());
         request.setDegree(admissionRequestDTO.getDegree());
         request.setDegreeName(admissionRequestDTO.getDegreeName());
-        request.setCreateAt(LocalDateTime.now());
+        request.setCreatedAt(LocalDateTime.now());
         return request;
     }
 

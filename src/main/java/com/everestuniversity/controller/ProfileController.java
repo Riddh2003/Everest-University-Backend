@@ -95,10 +95,10 @@ public class ProfileController {
 	// }
 
 	@PutMapping("/updateadmin")
-	public ResponseEntity<?> updateAdmin(@RequestParam UUID adminId, @RequestBody AdminDto adminDto) {
+	public ResponseEntity<?> updateAdmin(@RequestBody AdminDto adminDto) {
 		try {
 			// Find admin by ID
-			Optional<AdminEntity> optional = adminRepository.findById(adminId);
+			Optional<AdminEntity> optional = adminRepository.findById(adminDto.getAdminId());
 			if (optional.isEmpty()) {
 				return ResponseEntity.badRequest().body("Admin not found with the provided ID.");
 			}

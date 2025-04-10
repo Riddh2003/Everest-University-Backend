@@ -27,9 +27,6 @@ public class ResultEntity {
     String studentName;
 
     @Column(nullable = false)
-    String enrollmentId;
-
-    @Column(nullable = false)
     Integer semNumber;
 
     @Column(nullable = false)
@@ -51,7 +48,6 @@ public class ResultEntity {
     String degreeName;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "enrollmentId")
     StudentEntity student;
-
 }

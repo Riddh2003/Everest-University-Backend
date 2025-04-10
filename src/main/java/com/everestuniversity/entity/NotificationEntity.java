@@ -35,7 +35,7 @@ public class NotificationEntity {
     AdminEntity admin;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "enrollmentId")
     @JsonBackReference
     StudentEntity student;
 
@@ -46,6 +46,6 @@ public class NotificationEntity {
     String notificationType;
 
     @CreationTimestamp
-    LocalDateTime created_at;
+    LocalDateTime createdAt;
 
 }

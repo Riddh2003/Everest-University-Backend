@@ -68,5 +68,5 @@ public class AdmissionRequest {
 
     @Column(nullable = false)
     @CreationTimestamp
-    LocalDateTime createAt;
+    LocalDateTime createdAt;
 }

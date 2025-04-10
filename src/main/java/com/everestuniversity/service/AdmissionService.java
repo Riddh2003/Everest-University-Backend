@@ -35,6 +35,9 @@ public class AdmissionService {
     @Autowired
     AdmissionRepository admissionRepo;
 
+    @Autowired
+    JwtService jwtService;
+
     // Method to approve registration, transfer data to StudentEntity, and delete
     // from RegistrationEntity
     public void approveAdmission(UUID registrationId) {
@@ -44,8 +47,10 @@ public class AdmissionService {
         String password = PasswordGenerator.generatePassword();
         String encryptedPassword = encoder.encode(password);
         System.out.println(request);
+        String jwttoken = jwtService.generateToken(request.getEmail(),"student");
         // Create a new StudentEntity
         StudentEntity student = new StudentEntity();
+        student.setEnrollmentId(EnrollmentIdGenerator.generateEnrollmentId(request.getDegree()));
         student.setSurName(request.getSurName());
         student.setFirstName(request.getFirstName());
         student.setMiddleName(request.getMiddleName());
@@ -54,13 +59,12 @@ public class AdmissionService {
         student.setPassword(encryptedPassword);
         student.setGender(request.getGender());
         student.setDateOfBirth(request.getDateOfBirth());
-        student.setEnrollmentId(EnrollmentIdGenerator.generateEnrollmentId(request.getDegree()));
         student.setProgram(request.getProgram());
         student.setDegree(request.getDegree());
         student.setDegreeName(request.getDegreeName());
         student.setCurrentSem(1);
         student.setCurrentYear(1);
-        student.setToken("N/A");
+        student.setToken(jwttoken);
         student.setCreateAt(LocalDateTime.now());
 
         studentRepo.save(student);

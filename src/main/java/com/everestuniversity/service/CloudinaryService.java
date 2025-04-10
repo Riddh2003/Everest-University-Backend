@@ -85,6 +85,45 @@ public class CloudinaryService {
         } catch (Exception e) {
             throw new IOException("File upload failed: " + e.getMessage(), e);
         }
+
+        
+    }
+
+    public String uploadFileAndGetUrl(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IOException("File is missing");
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        if (originalFileName == null || originalFileName.trim().isEmpty()) {
+            throw new IOException("File name is missing");
+        }
+
+        String sanitizedFileName = originalFileName.replaceAll("\\s+", "_");
+        
+        // Determine resource type (default to "raw" for non-image files)
+        String resourceType = "raw";
+        
+        // Check if file is an image
+        String contentType = file.getContentType();
+        if (contentType != null && contentType.startsWith("image/")) {
+            resourceType = "image";
+        }
+
+        try {
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                    ObjectUtils.asMap(
+                            "public_id", sanitizedFileName,
+                            "use_filename", true,
+                            "unique_filename", true,
+                            "resource_type", resourceType
+                    ));
+
+            // Return the URL of the uploaded file
+            return uploadResult.get("secure_url").toString();
+        } catch (Exception e) {
+            throw new IOException("File upload failed: " + e.getMessage(), e);
+        }
     }
 
 }

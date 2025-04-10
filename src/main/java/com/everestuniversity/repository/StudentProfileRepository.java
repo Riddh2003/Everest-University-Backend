@@ -11,7 +11,6 @@ import com.everestuniversity.entity.StudentProfileEntity;
 @Repository
 public interface StudentProfileRepository extends JpaRepository<StudentProfileEntity, UUID> {
 
-    Optional<StudentProfileEntity> findByEnrollmentId(String enrollmentId);
+    Optional<StudentProfileEntity> findByStudentEnrollmentId(String enrollmentId);
     Optional<StudentProfileEntity> findByEmail(String email);
-
 }

@@ -32,29 +32,4 @@ public class EventRegistrationEntity {
 
     @CreationTimestamp
     LocalDateTime registrationDate;
-
-    public UUID getRegistrationId() {
-        return registrationId;
-    }
-
-    public void setRegistrationId(UUID registrationId) {
-        this.registrationId = registrationId;
-    }
-
-    public EventEntity getEvent() {
-        return event;
-    }
-
-    public void setEvent(EventEntity event) {
-        this.event = event;
-    }
-
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
 }

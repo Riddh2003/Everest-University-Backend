@@ -31,7 +31,7 @@ public class QueryEntity {
     UUID queryId;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "enrollmentId")
     @JsonBackReference
     StudentEntity student;
 

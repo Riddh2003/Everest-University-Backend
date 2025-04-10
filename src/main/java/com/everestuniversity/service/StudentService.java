@@ -22,9 +22,9 @@ public class StudentService {
 	StudentProfileRepository studentProfileRepo;
 
 	public boolean validateStudent(String studentId) {
-		String sanitizedId = studentId.startsWith("0x") ? studentId.substring(2) : studentId;
-		UUID uuid = UUIDService.formatUuid(sanitizedId);
-		Optional<StudentEntity> student = studentRepo.findById(uuid);
+		// String sanitizedId = studentId.startsWith("0x") ? studentId.substring(2) : studentId;
+		// UUID uuid = UUIDService.formatUuid(sanitizedId);
+		Optional<StudentEntity> student = studentRepo.findById(studentId);
 		if (student.isEmpty()) {
 			return false;
 		}
@@ -32,9 +32,9 @@ public class StudentService {
 	}
 
 	public StudentEntity getStudentById(String studentId) {
-		String sanitizedId = studentId.startsWith("0x") ? studentId.substring(2) : studentId;
-		UUID uuid = UUIDService.formatUuid(sanitizedId);
-		Optional<StudentEntity> student = studentRepo.findById(uuid);
+		// String sanitizedId = studentId.startsWith("0x") ? studentId.substring(2) : studentId;
+		// UUID uuid = UUIDService.formatUuid(sanitizedId);
+		Optional<StudentEntity> student = studentRepo.findById(studentId);
 		if (student.isEmpty()) {
 			return null;
 		}
@@ -43,7 +43,7 @@ public class StudentService {
 
 	public StudentProfileEntity getStudentProfile(String studentProfileId) {
 
-		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByEnrollmentId(studentProfileId);
+		Optional<StudentProfileEntity> studentProfile = studentProfileRepo.findByStudentEnrollmentId(studentProfileId);
 		if (studentProfile.isEmpty()) {
 			return null;
 		}
@@ -74,7 +74,6 @@ public class StudentService {
             String fullname = fullNameBuilder.toString();
 
             StudentProfileEntity studentProfile = new StudentProfileEntity();
-			studentProfile.setEnrollmentId(student.getEnrollmentId());
             studentProfile.setFirstname(student.getFirstName() != null ? student.getFirstName() : "");
             studentProfile.setMiddlename(student.getMiddleName() != null ? student.getMiddleName() : "");
             studentProfile.setSurname(student.getSurName() != null ? student.getSurName() : "");
@@ -91,7 +90,7 @@ public class StudentService {
             studentProfile.setCity("N/A");
             studentProfile.setNationality("N/A");
             studentProfile.setStudent(student);
-            studentProfile.setCreateAt(LocalDateTime.now());
+            studentProfile.setCreatedAt(LocalDateTime.now());
 
             studentProfileRepo.save(studentProfile);
         } catch (Exception e) {

@@ -1,7 +1,10 @@
 package com.everestuniversity.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,8 +12,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -66,9 +72,21 @@ public class StudentEntity {
 	@Column(nullable = false)
 	LocalDateTime createAt;
 
-	@Column(nullable = true)
-	String token;
-
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    String token;
+	
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonBackReference
     StudentProfileEntity studentProfile;
+
+	@Column(nullable = true)
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+	List<FeesEntity> fees;
+
+	@OneToMany(mappedBy = "student")
+	List<NotificationEntity> notification;
+
+	@OneToMany(mappedBy = "student")
+	List<ResultEntity> result;
 }

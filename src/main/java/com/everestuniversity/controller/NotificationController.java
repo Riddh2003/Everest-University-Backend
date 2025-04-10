@@ -36,10 +36,10 @@ public class NotificationController {
 
 	// Only, Admin can create the notification method
 	@PostMapping("/createnotification")
-	public ResponseEntity<?> createNotification(@RequestParam UUID adminId, @RequestParam UUID studentId,
+	public ResponseEntity<?> createNotification(@RequestParam UUID adminId, @RequestParam String enrollmentId,
 			@RequestBody NotificationDto notificationDto) {
 		Optional<AdminEntity> adminOptional = adminRepository.findById(adminId);
-		Optional<StudentEntity> studentOptional = studentRepository.findById(studentId);
+		Optional<StudentEntity> studentOptional = studentRepository.findById(enrollmentId);
 		if (adminOptional.isEmpty() & studentOptional.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Amdin not found...");
 		}

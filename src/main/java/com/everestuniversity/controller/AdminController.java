@@ -1,5 +1,6 @@
 package com.everestuniversity.controller;
 
+import java.beans.Encoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.everestuniversity.dto.FacultyDto;
 import com.everestuniversity.dto.StudentDto;
 import com.everestuniversity.entity.AdminEntity;
 import com.everestuniversity.entity.AdmissionRequest;
+import com.everestuniversity.entity.FacultyEntity;
 import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.repository.AdminRepository;
 import com.everestuniversity.repository.AdmissionRequestRepository;
+import com.everestuniversity.repository.FacultyRepository;
 import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.AdmissionRequestService;
 import com.everestuniversity.service.AdmissionService;
+import com.everestuniversity.service.CloudinaryService;
 import com.everestuniversity.service.UUIDService;
 
 @RestController
@@ -34,6 +40,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminRepository adminRepo;
+
+    @Autowired
+    FacultyRepository facultyRepository;
 
 	@Autowired
 	private AdmissionRequestService admissionRequestService;
@@ -46,6 +55,12 @@ public class AdminController {
 
 	@Autowired
 	private StudentRepository studentRepository;
+
+    @Autowired
+    CloudinaryService cloudinaryService;
+
+    @Autowired
+    BCryptPasswordEncoder encoder;
 
 	@GetMapping("/getalladmin")
 	public ResponseEntity<?> getAllAdmin() {
@@ -195,5 +210,44 @@ public class AdminController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
+
+    @PostMapping("/addfaculty")
+    public ResponseEntity<?> addFaculty(@RequestBody FacultyDto facultyDto) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            System.out.println(facultyDto);
+            Optional<FacultyEntity> op = facultyRepository.findByEmail(facultyDto.getEmail());
+            if(op.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Faculty already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            FacultyEntity faculty = new FacultyEntity();
+            faculty.setName(facultyDto.getName());
+            faculty.setEmail(facultyDto.getEmail());
+            faculty.setPassword(encoder.encode(facultyDto.getPassword()));
+            faculty.setProfilePicture(facultyDto.getProfilePicture());
+            faculty.setDepartment(facultyDto.getDepartment());
+            faculty.setQualification(facultyDto.getQualification());
+            faculty.setPhoneNumber(facultyDto.getPhoneNumber());
+            faculty.setGender(facultyDto.getGender());
+            faculty.setAddress(facultyDto.getAddress());
+            faculty.setRole(facultyDto.getRole());
+            faculty.setStatus(facultyDto.getStatus());
+            faculty.setToken(facultyDto.getToken());
+
+            facultyRepository.save(faculty);
+            response.put("success", true);
+            response.put("message", "Faculty added successfully");
+            response.put("data", faculty);
+        } catch(Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to add faculty");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
 
 }

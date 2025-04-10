@@ -3,6 +3,8 @@ package com.everestuniversity.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,55 +39,7 @@ public class MaterialEntity {
     LocalDateTime uploadedAt;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "courseId")
     CourseEntity course;
-
-    public UUID getMaterialId() {
-        return materialId;
-    }
-
-    public void setMaterialId(UUID materialId) {
-        this.materialId = materialId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public LocalDateTime getUploadedAt() {
-        return uploadedAt;
-    }
-
-    public void setUploadedAt(LocalDateTime uploadedAt) {
-        this.uploadedAt = uploadedAt;
-    }
-
-    public CourseEntity getCourse() {
-        return course;
-    }
-
-    public void setCourse(CourseEntity course) {
-        this.course = course;
-    }
-
 }

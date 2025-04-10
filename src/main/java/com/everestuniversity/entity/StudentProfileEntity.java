@@ -3,6 +3,8 @@ package com.everestuniversity.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@Table(name = "student_profiles")
+@Table(name = "studentProfile")
 public class StudentProfileEntity {
     
     @Id
@@ -25,11 +27,9 @@ public class StudentProfileEntity {
     private UUID profileId;
 
     @OneToOne
-    @JoinColumn(name = "studentId")
+	@JsonBackReference
+    @JoinColumn(name = "enrollmentId", unique = true)
     StudentEntity student;
-
-    @Column(nullable = false,unique = true)
-	String enrollmentId;
 
 	@Column(nullable = false)
 	String firstname;
@@ -77,5 +77,5 @@ public class StudentProfileEntity {
 	String maritalStatus; // Single, Married, Divorced, Widowed
 
 	@Column(nullable = false)
-	LocalDateTime createAt;
+	LocalDateTime createdAt;
 }

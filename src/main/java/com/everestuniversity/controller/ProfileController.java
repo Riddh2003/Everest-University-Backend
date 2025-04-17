@@ -2,25 +2,24 @@ package com.everestuniversity.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.everestuniversity.dto.AdminDto;
-import com.everestuniversity.dto.LoginRequest;
+
 import com.everestuniversity.entity.AdminEntity;
 import com.everestuniversity.entity.FacultyEntity;
-import com.everestuniversity.entity.StudentEntity;
+
 import com.everestuniversity.repository.AdminRepository;
 import com.everestuniversity.repository.FacultyRepository;
 import com.everestuniversity.repository.StudentRepository;
@@ -49,7 +48,6 @@ public class ProfileController {
 	@Autowired
 	JwtService jwtService;
 
-	
 	@GetMapping("/getallfaculty")
 	public ResponseEntity<?> getAllFaculty() {
 		List<FacultyEntity> facultyEntity = facultyRepository.findAll();
@@ -58,41 +56,6 @@ public class ProfileController {
 		}
 		return ResponseEntity.ok(facultyEntity);
 	}
-
-	// @PutMapping("/updatestudent")
-	// public ResponseEntity<?> updateStudent(@ModelAttribute StudentEntity entity) {
-	// 	try {
-	// 		// Find student in the database by email
-	// 		Optional<StudentEntity> optional = studentRepository.findByEmail(entity.getEmail());
-	// 		if (optional.isEmpty()) {
-	// 			return ResponseEntity.badRequest().body("Student not found with the provided email.");
-	// 		}
-
-	// 		StudentEntity studentEntity = optional.get();
-
-	// 		// Update student details
-	// 		studentEntity.setSurName(entity.getSurName());
-	// 		studentEntity.setFirstName(entity.getFirstName());
-	// 		studentEntity.setMiddleName(entity.getMiddleName());
-	// 		studentEntity.setMobileNo(entity.getMobileNo());
-	// 		studentEntity.setEmail(entity.getEmail());
-	// 		studentEntity.setPassword(encoder.encode(entity.getPassword()));
-	// 		studentEntity.setGender(entity.getGender());
-	// 		studentEntity.setDateOfBirth(entity.getDateOfBirth());
-	// 		studentEntity.setProgram(entity.getProgram());
-	// 		studentEntity.setDegree(entity.getDegree());
-	// 		studentEntity.setDegreeName(entity.getDegreeName());
-	// 		studentEntity.setCurrentSem(entity.getCurrentSem());
-	// 		studentEntity.setCurrentYear(entity.getCurrentYear());
-
-	// 		// Save updated details to the database
-	// 		studentRepository.save(studentEntity);
-
-	// 		return ResponseEntity.ok("Student details updated successfully.");
-	// 	} catch (Exception e) {
-	// 		return ResponseEntity.status(500).body("Error: " + e.getMessage());
-	// 	}
-	// }
 
 	@PutMapping("/updateadmin")
 	public ResponseEntity<?> updateAdmin(@RequestBody AdminDto adminDto) {

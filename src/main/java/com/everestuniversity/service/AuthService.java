@@ -30,7 +30,7 @@ public class AuthService {
 	
 	
 	public boolean checkStudent(String enrollmentId) {
-		Optional<StudentEntity> studentOp = studentRepo.findByEnrollmentId(enrollmentId);
+		Optional<StudentEntity> studentOp = studentRepo.findById(enrollmentId);
 		if(studentOp.isEmpty()) {
 			return false;
 		}
@@ -49,7 +49,7 @@ public class AuthService {
 		
 		HashMap<String, Object> response = new HashMap<>();
 		System.out.println("Enrollment id: " + enrollmentId);
-		Optional<StudentEntity> op = studentRepo.findByEnrollmentId(enrollmentId);
+		Optional<StudentEntity> op = studentRepo.findById(enrollmentId);
 	    
 	      if (op.isPresent()) {
 	    	  

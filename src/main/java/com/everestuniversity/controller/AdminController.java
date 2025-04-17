@@ -71,10 +71,10 @@ public class AdminController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/getadminbyid")
-	public ResponseEntity<?> getUserById(@RequestParam UUID userId) {
+	@GetMapping("/getadminbyemail")
+	public ResponseEntity<?> getUserById(@RequestParam String email) {
 		HashMap<String, Object> response = new HashMap<>();
-		AdminEntity admin = adminRepo.findById(userId).orElse(null);
+		AdminEntity admin = adminRepo.findByEmail(email).orElse(null);
 		if (admin != null) {
 			response.put("success", true);
 			response.put("message", "Admin fetched successfully");

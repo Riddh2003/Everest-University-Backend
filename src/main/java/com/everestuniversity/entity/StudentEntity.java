@@ -75,18 +75,17 @@ public class StudentEntity {
     @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     String token;
-	
+
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     @JsonBackReference
     StudentProfileEntity studentProfile;
 
-	@Column(nullable = true)
-	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-	List<FeesEntity> fees;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    List<FeesEntity> fees;
 
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
 	List<NotificationEntity> notification;
 
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
 	List<ResultEntity> result;
 }

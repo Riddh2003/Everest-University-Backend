@@ -27,7 +27,6 @@ public class StudentProfileEntity {
     private UUID profileId;
 
     @OneToOne
-	@JsonBackReference
     @JoinColumn(name = "enrollmentId", unique = true)
     StudentEntity student;
 

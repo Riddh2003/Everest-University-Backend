@@ -93,7 +93,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
             
-            Optional<StudentEntity> op = studentRepository.findByEnrollmentId(enrollmentId);
+            Optional<StudentEntity> op = studentRepository.findById(enrollmentId);
     
             if (op.isEmpty()) {
                 response.put("success", false);

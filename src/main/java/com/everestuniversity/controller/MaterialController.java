@@ -58,11 +58,11 @@ public class MaterialController {
 
     // List Materials API
     @GetMapping("/listMaterials")
-    public ResponseEntity<?> listMaterials(@RequestParam String courseId) {
+    public ResponseEntity<?> listMaterials() {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            CourseEntity course = materialService.validateCourse(courseId);
-            List<MaterialEntity> materials = materialService.listMaterials(courseId);
+            // CourseEntity course = materialService.validateCourse(courseId);
+            List<MaterialEntity> materials = materialService.listMaterials();
             response.put("message", "Materials retrieved successfully");
             response.put("success", true);
             response.put("data", materials);

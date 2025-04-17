@@ -31,27 +31,28 @@ public class StudentController {
 
 	@GetMapping("/getstudent")
 	public ResponseEntity<?> getStudent(@RequestParam String enrollmentId) {
-	    // Find student by email
-	    Optional<StudentEntity> optional = studentRepository.findByEnrollmentId(enrollmentId);
-	    if (!optional.isPresent()) {
+	    // Find student by enrollment ID
+	    Optional<StudentEntity> optional = studentRepository.findById(enrollmentId);
+	    if (optional.isEmpty()) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found.");
 	    }
 	    StudentEntity student = optional.get();
-	    System.out.println(student);
-	    return ResponseEntity.status(HttpStatus.FOUND).body(student);
+	    System.out.println("Student found: " + student.getEnrollmentId());
+	    return ResponseEntity.ok(student);
 	}
 
 	@GetMapping("/getallstudent")
 	public ResponseEntity<?> getAllUser() {
-		List<StudentEntity> userEntity = studentRepository.findAll();
-		if (userEntity.isEmpty()) {
+		List<StudentEntity> students = studentRepository.findAll();
+		if (students.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No users found...");
 		}
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(students);
 	}
 
 
-	@GetMapping("/getstudentprofie")
+	// Fix the typo in the endpoint name from "getstudentprofie" to "getstudentprofile"
+	@GetMapping("/getstudentprofile")
 	public ResponseEntity<?> getStudentProfile(@RequestParam String enrollmentId) {
 		HashMap<String, Object> response = new HashMap<>();
 		if (studentService.getStudentProfile(enrollmentId) == null) {
@@ -62,7 +63,7 @@ public class StudentController {
 
 		StudentProfileEntity profile = studentService.getStudentProfile(enrollmentId);
 		response.put("success", true);
-		response.put("message", "Studen Profile fetched successfully");
+		response.put("message", "Student Profile fetched successfully");
 		response.put("data", profile);
 		return ResponseEntity.ok(response);
 	}

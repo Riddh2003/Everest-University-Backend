@@ -62,7 +62,7 @@ public class StudentService {
             System.out.println(student);
             // Check if profile already exists
             Optional<StudentProfileEntity> existingProfile = studentProfileRepo.findByEmail(email);
-            if (existingProfile.isEmpty()) {
+            if (!existingProfile.isEmpty()) {
                 throw new RuntimeException("Profile already exists for student: " + email);
             }
 

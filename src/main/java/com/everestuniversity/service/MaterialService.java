@@ -76,11 +76,8 @@ public class MaterialService {
     }
 
     // List materials logic
-    public List<MaterialEntity> listMaterials(String courseId) {
-        String sanitizedId = courseId.startsWith("0x") ? courseId.substring(2) : courseId;
-        UUID uuid = UUIDService.formatUuid(sanitizedId);
-
-        List<MaterialEntity> materials = materialRepo.findByCourse_CourseId(uuid);
+    public List<MaterialEntity> listMaterials() {
+        List<MaterialEntity> materials = materialRepo.findAll();
         return materials;
     }
 

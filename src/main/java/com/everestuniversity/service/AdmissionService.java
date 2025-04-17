@@ -68,6 +68,7 @@ public class AdmissionService {
         student.setCreateAt(LocalDateTime.now());
 
         studentRepo.save(student);
+        System.out.println("student saved");
         mailService.sendEnrollementAndPassword(request.getEmail(), password);
         studentService.setStudentProfile(request.getEmail());
         

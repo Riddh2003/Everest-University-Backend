@@ -47,6 +47,7 @@ public class CourseEntity {
     SemesterEntity semester;
 
     @OneToMany(mappedBy = "course")
+    @JsonBackReference
     List<MaterialEntity> material;
 
 }

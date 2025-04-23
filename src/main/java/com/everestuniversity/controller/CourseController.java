@@ -24,10 +24,10 @@ public class CourseController {
     private SemesterService semesterService;
 
     @GetMapping("/getCourse")
-    public ResponseEntity<?> getCourseById(@RequestParam("courseId") String courseId) throws Exception{
+    public ResponseEntity<?> getCourseById(@RequestParam("courseId") String courseId) throws Exception {
         HashMap<String, Object> response = new HashMap<String, Object>();
         try {
-            if(courseService.validateCourse(courseId) == false){
+            if (courseService.validateCourse(courseId) == false) {
                 response.put("message", "Course not found");
                 response.put("success", false);
                 return ResponseEntity.badRequest().body(response);
@@ -45,16 +45,12 @@ public class CourseController {
     }
 
     @GetMapping("/listCourses")
-    public ResponseEntity<?> listCourses(@RequestParam("semesterId") String semesterId) {
+    public ResponseEntity<?> listCourses() {
         HashMap<String, Object> response = new HashMap<String, Object>();
         try {
-            if(semesterService.isSemesterExists(semesterId) == false){
-                response.put("message", "Degree not found");
-                response.put("success", false);
-                return ResponseEntity.badRequest().body(response);
-            }
+            // Fetch all courses without semester filter
             response.put("success", true);
-            response.put("data", courseService.listCourses(semesterId));
+            response.put("data", courseService.listCourses());
         } catch (Exception e) {
             response.put("message", e.getMessage());
             response.put("success", false);

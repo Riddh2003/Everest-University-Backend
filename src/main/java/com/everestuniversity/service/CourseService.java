@@ -33,10 +33,8 @@ public class CourseService {
         return true;
     }
 
-    public List<CourseEntity> listCourses(String semesterId) {
-        String sanitizedId = semesterId.startsWith("0x") ? semesterId.substring(2) : semesterId;
-        UUID uuid = UUIDService.formatUuid(sanitizedId);
-        return courseRepo.findBySemester_SemesterId(uuid);
+    public List<CourseEntity> listCourses() {
+        return courseRepo.findAll();
     }
 
     public CourseEntity getCourseById(String courseId) throws Exception {

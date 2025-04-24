@@ -2,15 +2,12 @@ package com.everestuniversity.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -27,7 +24,7 @@ import lombok.experimental.FieldDefaults;
 public class StudentEntity {
 
 	@Id
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	String enrollmentId;
 
 	@Column(nullable = false)
@@ -72,16 +69,15 @@ public class StudentEntity {
 	@Column(nullable = false)
 	LocalDateTime createAt;
 
-    @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)
-    String token;
+	@Column(nullable = true)
+	@Temporal(TemporalType.TIMESTAMP)
+	String token;
 
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
-    @JsonBackReference
-    StudentProfileEntity studentProfile;
+	@OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+	StudentProfileEntity studentProfile;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    List<FeesEntity> fees;
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+	List<FeesEntity> fees;
 
 	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
 	List<NotificationEntity> notification;

@@ -21,14 +21,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "studentProfile")
 public class StudentProfileEntity {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID profileId;
 
-    @OneToOne
-    @JoinColumn(name = "enrollmentId", unique = true)
-    StudentEntity student;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID profileId;
+
+	@OneToOne
+	@JoinColumn(name = "enrollmentId", unique = true)
+	@JsonBackReference
+	StudentEntity student;
 
 	@Column(nullable = false)
 	String firstname;

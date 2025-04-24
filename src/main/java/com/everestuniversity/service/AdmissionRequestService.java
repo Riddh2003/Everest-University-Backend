@@ -1,7 +1,6 @@
 package com.everestuniversity.service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class AdmissionRequestService {
 
     @Autowired
     AdmissionRepository admissionRepo;
-    
+
     @Autowired
     StudentRepository studentRepository;
 
@@ -81,48 +80,45 @@ public class AdmissionRequestService {
 
     // Approve registration
     public void approveRegistration(UUID registrationId) {
-        System.out.println("Registration id :"+registrationId);
+        System.out.println("Registration id :" + registrationId);
         AdmissionRequest registration = admissionRequestRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
-        System.out.println("Registration :"+registration);
+        System.out.println("Registration :" + registration);
         try {
             Optional<AdmisstionEntity> op = admissionRepo.findByEmail(registration.getEmail());
-            if(op.isEmpty()){
+            if (op.isEmpty()) {
                 AdmisstionEntity admission = new AdmisstionEntity();
                 admission = new AdmisstionEntity();
                 admission = new AdmisstionEntity();
                 // Set all required fields from registration to admission
-                admission.setFullName(
-                        registration.getSurName() + " " + registration.getFirstName() + " " + registration.getMiddleName());
+                admission.setFullName(registration.getSurName() + " " + registration.getFirstName() + " "
+                        + registration.getMiddleName());
                 admission.setEmail(registration.getEmail());
                 admission.setMobileNo(registration.getMobileNo());
                 admission.setGender(registration.getGender());
                 admission.setDegree(registration.getDegree() + " " + registration.getDegreeName());
                 admission.setStatus("APPROVED");
                 admission.setCreatedAt(LocalDateTime.now());
-                
+
                 // Save the complete admission entity
                 admissionRepo.save(admission);
                 System.out.println("admission saved");
-            }
-            else{
+            } else {
                 AdmisstionEntity admission = op.get();
                 if (admission.getStatus().equals("PENDING")) {
                     admission.setStatus("APPROVED");
                     admissionRepo.save(admission);
                     System.out.println("admission saved");
-                }
-                else if(admission.getStatus().equals("APPROVED")){
+                } else if (admission.getStatus().equals("APPROVED")) {
                     System.out.println("admission already approved");
-                }
-                else if(admission.getStatus().equals("REJECTED")){
+                } else if (admission.getStatus().equals("REJECTED")) {
                     System.out.println("admission already rejected");
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException("Error processing admission approval", e);
         }
-        
+
     }
 
     // Reject registration

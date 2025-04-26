@@ -109,58 +109,6 @@ public class ProfileController {
 		}
 	}
 
-	@PostMapping(value = "/addfaculty-with-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> addFacultyWithProfile(@RequestPart("faculty") FacultyDto facultyDto,
-			@RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
-		try {
-			// Check if faculty with the same email already exists
-			if (facultyRepository.findByEmail(facultyDto.getEmail()).isPresent()) {
-				Map<String, Object> response = new HashMap<>();
-				response.put("success", false);
-				response.put("message", "Faculty with this email already exists");
-				return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-			}
-
-			// Create a new faculty entity
-			FacultyEntity facultyEntity = new FacultyEntity();
-			facultyEntity.setName(facultyDto.getName());
-			facultyEntity.setEmail(facultyDto.getEmail());
-			facultyEntity.setPassword(encoder.encode(facultyDto.getPassword()));
-			facultyEntity.setGender(facultyDto.getGender());
-			facultyEntity.setPhoneNumber(facultyDto.getPhoneNumber());
-			facultyEntity.setAddress(facultyDto.getAddress());
-			facultyEntity.setRole(facultyDto.getRole());
-			facultyEntity.setQualification(facultyDto.getQualification());
-			facultyEntity.setStatus(facultyDto.getStatus());
-			facultyEntity.setDepartment(facultyDto.getDepartment());
-
-			// Upload profile picture if provided
-			if (profilePicture != null && !profilePicture.isEmpty()) {
-				String profilePictureUrl = cloudinaryService.uploadFileToDocumentsFolder(profilePicture,
-						facultyDto.getName());
-				facultyEntity.setProfilePicture(profilePictureUrl);
-			} else {
-				facultyEntity.setProfilePicture(null);
-			}
-
-			// Save the faculty entity
-			facultyRepository.save(facultyEntity);
-
-			// Create response
-			Map<String, Object> response = new HashMap<>();
-			response.put("success", true);
-			response.put("message", "Faculty added successfully");
-			response.put("facultyId", facultyEntity.getFacultyId());
-
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
-		} catch (Exception e) {
-			Map<String, Object> response = new HashMap<>();
-			response.put("success", false);
-			response.put("message", "Error adding faculty: " + e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-		}
-	}
-
 	@PutMapping("/updatefaculty")
 	public ResponseEntity<?> updateFaculty(@RequestBody FacultyDto facultyDto) {
 		try {

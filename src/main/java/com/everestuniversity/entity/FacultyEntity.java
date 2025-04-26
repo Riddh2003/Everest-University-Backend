@@ -38,9 +38,6 @@ public class FacultyEntity {
     String password;
 
     @Column(nullable = false)
-    String profilePicture;
-
-    @Column(nullable = false)
     String role;
 
     @Column(nullable = false)
@@ -60,6 +57,9 @@ public class FacultyEntity {
 
     @Column(nullable = false)
     String address;
+
+    @Column(nullable = true)
+    String profilePicture;
 
     @CreationTimestamp
     LocalDateTime createdAt;

@@ -74,6 +74,7 @@ public class StudentEntity {
 	String token;
 
 	@OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+	@JsonBackReference
 	StudentProfileEntity studentProfile;
 
 	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)

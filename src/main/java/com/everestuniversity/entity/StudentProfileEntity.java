@@ -28,7 +28,6 @@ public class StudentProfileEntity {
 
 	@OneToOne
 	@JoinColumn(name = "enrollmentId", unique = true)
-	@JsonBackReference
 	StudentEntity student;
 
 	@Column(nullable = false)

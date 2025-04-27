@@ -2,6 +2,8 @@ package com.everestuniversity.entity;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,5 +51,6 @@ public class ResultEntity {
 
     @ManyToOne
     @JoinColumn(name = "enrollmentId")
+    @JsonBackReference
     StudentEntity student;
 }

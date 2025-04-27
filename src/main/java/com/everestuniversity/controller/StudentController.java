@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.everestuniversity.entity.FeesEntity;
+import com.everestuniversity.entity.ResultEntity;
 import com.everestuniversity.entity.StudentEntity;
 import com.everestuniversity.entity.StudentProfileEntity;
+import com.everestuniversity.repository.ResultRepository;
 import com.everestuniversity.repository.StudentRepository;
 import com.everestuniversity.service.StudentService;
 
@@ -31,6 +33,9 @@ public class StudentController {
 
 	@Autowired
 	StudentRepository studentRepository;
+
+	@Autowired
+	ResultRepository resultRepository;
 
 	@GetMapping("/getstudent")
 	public ResponseEntity<?> getStudent(@RequestParam String enrollmentId) {
@@ -242,6 +247,39 @@ public class StudentController {
 		} catch (Exception e) {
 			response.put("success", false);
 			response.put("message", "Error deleting student: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+
+	@GetMapping("/getresults")
+	public ResponseEntity<?> getStudentResults(@RequestParam String enrollmentId) {
+		HashMap<String, Object> response = new HashMap<>();
+
+		try {
+			Optional<StudentEntity> studentOpt = studentRepository.findById(enrollmentId);
+
+			if (studentOpt.isEmpty()) {
+				response.put("success", false);
+				response.put("message", "Student not found with enrollment ID: " + enrollmentId);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+			}
+
+			StudentEntity student = studentOpt.get();
+			List<ResultEntity> results = resultRepository.findByStudent(student);
+
+			if (results.isEmpty()) {
+				response.put("success", false);
+				response.put("message", "No results found for this student");
+				return ResponseEntity.ok(response);
+			}
+
+			response.put("success", true);
+			response.put("message", "Results retrieved successfully");
+			response.put("data", results);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error retrieving results: " + e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}

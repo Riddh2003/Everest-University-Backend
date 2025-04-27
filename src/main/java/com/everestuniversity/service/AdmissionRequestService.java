@@ -88,8 +88,6 @@ public class AdmissionRequestService {
             Optional<AdmisstionEntity> op = admissionRepo.findByEmail(registration.getEmail());
             if (op.isEmpty()) {
                 AdmisstionEntity admission = new AdmisstionEntity();
-                admission = new AdmisstionEntity();
-                admission = new AdmisstionEntity();
                 // Set all required fields from registration to admission
                 admission.setFullName(registration.getSurName() + " " + registration.getFirstName() + " "
                         + registration.getMiddleName());
@@ -118,7 +116,6 @@ public class AdmissionRequestService {
         } catch (Exception e) {
             throw new RuntimeException("Error processing admission approval", e);
         }
-
     }
 
     // Reject registration
@@ -129,7 +126,7 @@ public class AdmissionRequestService {
         AdmisstionEntity admission = op.get();
         admission.setStatus("REJECTED");
         admission.setCreatedAt(LocalDateTime.now());
-        admissionRequestRepo.delete(registration);
+        admissionRequestRepo.deleteById(registrationId);
 
         admissionRepo.save(admission);
     }

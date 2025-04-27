@@ -63,7 +63,15 @@ public class MaterialService {
     public MaterialEntity mapDtoToEntity(MaterialDto materialDto, String filePath, CourseEntity course) {
         MaterialEntity materialEntity = new MaterialEntity();
         materialEntity.setTitle(materialDto.getTitle());
-        materialEntity.setDescription(materialDto.getDescription());
+
+        // Truncate description if it's too long (assuming db column has a max length of
+        // 255)
+        String description = materialDto.getDescription();
+        if (description != null && description.length() > 250) {
+            description = description.substring(0, 250);
+        }
+        materialEntity.setDescription(description);
+
         materialEntity.setFilePath(filePath);
         materialEntity.setUploadedAt(LocalDateTime.now());
         materialEntity.setCourse(course);
@@ -82,9 +90,8 @@ public class MaterialService {
     }
 
     // Update material logic
-    public MaterialEntity updateMaterial(MaterialEntity existingMaterial,
-            MaterialDto materialDto,
-            MultipartFile file) throws IOException {
+    public MaterialEntity updateMaterial(MaterialEntity existingMaterial, MaterialDto materialDto, MultipartFile file)
+            throws IOException {
         // if (file != null) {
         // String filePath = saveMaterial(file, courseName);
         // existingMaterial.setFilePath(filePath);
@@ -93,7 +100,12 @@ public class MaterialService {
             existingMaterial.setTitle(materialDto.getTitle());
         }
         if (materialDto.getDescription() != null) {
-            existingMaterial.setDescription(materialDto.getDescription());
+            // Truncate description if it's too long
+            String description = materialDto.getDescription();
+            if (description.length() > 250) {
+                description = description.substring(0, 250);
+            }
+            existingMaterial.setDescription(description);
         }
         return materialRepo.save(existingMaterial);
     }

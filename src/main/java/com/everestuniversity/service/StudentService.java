@@ -186,4 +186,45 @@ public class StudentService {
 		return feesRepository.save(fees);
 	}
 
+	/**
+	 * Deletes a student and their profile data
+	 * 
+	 * @param enrollmentId The student's enrollment ID
+	 * @return true if deletion was successful, false otherwise
+	 */
+	public boolean deleteStudent(String enrollmentId) {
+		try {
+			// First check if the student exists
+			Optional<StudentEntity> studentOpt = studentRepo.findById(enrollmentId);
+			if (studentOpt.isEmpty()) {
+				return false;
+			}
+
+			StudentEntity student = studentOpt.get();
+
+			// Get student profile if it exists
+			Optional<StudentProfileEntity> profileOpt = studentProfileRepo.findByStudentEnrollmentId(enrollmentId);
+
+			// Delete fees record if exists
+			Optional<FeesEntity> feesOpt = feesRepository.findByStudentEnrollmentId(enrollmentId);
+			if (feesOpt.isPresent()) {
+				feesRepository.delete(feesOpt.get());
+			}
+
+			// Delete student profile if exists
+			if (profileOpt.isPresent()) {
+				studentProfileRepo.delete(profileOpt.get());
+			}
+
+			// Finally delete the student record
+			studentRepo.delete(student);
+
+			return true;
+		} catch (Exception e) {
+			System.err.println("Error deleting student: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

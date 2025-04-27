@@ -25,7 +25,6 @@ public class SemesterService {
                 .orElseThrow(() -> new RuntimeException("Semester not found"));
 
         System.out.println("Degree name" + semester.getDegree().getDegreeName());
-        course.setSemester(semester);
         course.setDegreeName(semester.getDegree().getDegreeName());
         courseRepo.save(course);
 
@@ -47,8 +46,7 @@ public class SemesterService {
     public SemesterEntity getSemesterById(String semesterId) throws Exception {
         String sanitizedId = semesterId.startsWith("0x") ? semesterId.substring(2) : semesterId;
         UUID uuid = UUIDService.formatUuid(sanitizedId);
-        return semesterRepo.findById(uuid)
-                .orElseThrow(() -> new Exception("Semester not found"));
+        return semesterRepo.findById(uuid).orElseThrow(() -> new Exception("Semester not found"));
     }
 
 }

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.everestuniversity.dto.MaterialDto;
-import com.everestuniversity.entity.CourseEntity;
 import com.everestuniversity.entity.MaterialEntity;
 import com.everestuniversity.service.MaterialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,20 +29,17 @@ public class MaterialController {
 
     // Add Material API
     @PostMapping("/addMaterial")
-    public ResponseEntity<?> addMaterial(
-            @RequestParam String courseId,
-            @RequestPart("file") MultipartFile file,
+    public ResponseEntity<?> addMaterial(@RequestPart("file") MultipartFile file,
             @RequestPart("material") String materialJson) {
         HashMap<String, Object> response = new HashMap<>();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             MaterialDto materialDto = objectMapper.readValue(materialJson, MaterialDto.class);
 
-            CourseEntity course = materialService.validateCourse(courseId);
-            String filePath = materialService.saveMaterial(file, course.getDegreeName(),
-                    course.getSemester().getSemesterNumber(), course.getCourseName());
+            // No course validation needed now
+            String filePath = materialService.saveMaterial(file, "General", 1, "General");
 
-            MaterialEntity materialEntity = materialService.mapDtoToEntity(materialDto, filePath, course);
+            MaterialEntity materialEntity = materialService.mapDtoToEntity(materialDto, filePath, null);
             materialService.saveMaterial(materialEntity);
             response.put("message", "File uploaded successfully");
             response.put("filePath", filePath);
@@ -76,8 +72,7 @@ public class MaterialController {
 
     // Update Material API
     @PutMapping("/updateMaterial")
-    public ResponseEntity<?> updateMaterial(
-            @RequestParam String materialId,
+    public ResponseEntity<?> updateMaterial(@RequestParam String materialId,
             @RequestPart(value = "file", required = false) MultipartFile file,
             @RequestPart(value = "material", required = false) String materialJson) {
         HashMap<String, Object> response = new HashMap<>();

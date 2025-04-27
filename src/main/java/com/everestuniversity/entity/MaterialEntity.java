@@ -30,7 +30,7 @@ public class MaterialEntity {
     @Column(nullable = false, unique = true)
     String title;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, columnDefinition = "TEXT")
     String description;
 
     @Column(unique = true)
@@ -40,6 +40,6 @@ public class MaterialEntity {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "courseId")
+    @JoinColumn(name = "courseId", nullable = true)
     CourseEntity course;
 }

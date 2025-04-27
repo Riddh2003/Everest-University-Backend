@@ -46,9 +46,6 @@ public class AdminController {
     private AdminRepository adminRepo;
 
     @Autowired
-    private FacultyRepository facultyRepository;
-
-    @Autowired
     private AdmissionRequestService admissionRequestService;
 
     @Autowired
@@ -155,7 +152,7 @@ public class AdminController {
                 try {
                     admissionRequestService.approveRegistration(uuid);
                     admissionService.approveAdmission(uuid);
-                    admissionRequestRepo.delete(registration);
+                    admissionRequestRepo.deleteById(uuid);
                 } catch (Exception processError) {
                     throw new RuntimeException("Error during approval process: " + processError.getMessage());
                 }

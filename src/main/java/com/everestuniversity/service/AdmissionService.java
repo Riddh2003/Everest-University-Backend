@@ -41,16 +41,16 @@ public class AdmissionService {
     // Method to approve registration, transfer data to StudentEntity, and delete
     // from RegistrationEntity
     public void approveAdmission(UUID registrationId) {
-    	System.out.println("approve");
+        System.out.println("approve");
         AdmissionRequest request = admissionRequesrRepo.findById(registrationId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
         String password = PasswordGenerator.generatePassword();
         String encryptedPassword = encoder.encode(password);
         System.out.println(request);
-        String jwttoken = jwtService.generateToken(request.getEmail(),"student");
+        String jwttoken = jwtService.generateToken(request.getEmail(), "student");
         // Create a new StudentEntity
         StudentEntity student = new StudentEntity();
-        student.setEnrollmentId(EnrollmentIdGenerator.generateEnrollmentId(request.getDegree()));
+        student.setEnrollmentId(EnrollmentIdGenerator.generateEnrollmentId());
         student.setSurName(request.getSurName());
         student.setFirstName(request.getFirstName());
         student.setMiddleName(request.getMiddleName());
@@ -71,12 +71,11 @@ public class AdmissionService {
         System.out.println("student saved");
         mailService.sendEnrollementAndPassword(request.getEmail(), password);
         studentService.setStudentProfile(request.getEmail());
-        
+
     }
 
     public boolean isEligibleForApproval(UUID admissionId) {
-        AdmisstionEntity admission = admissionRepo.findById(admissionId)
-                .orElse(null);
+        AdmisstionEntity admission = admissionRepo.findById(admissionId).orElse(null);
         if (!admission.getStatus().equals("APPROVED")) {
             return true; // New admission, eligible for approval
         }

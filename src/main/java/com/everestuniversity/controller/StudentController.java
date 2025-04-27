@@ -204,4 +204,45 @@ public class StudentController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
+
+	@PostMapping("/deletestudent")
+	public ResponseEntity<?> deleteStudent(@RequestBody HashMap<String, String> requestData) {
+		HashMap<String, Object> response = new HashMap<>();
+
+		try {
+			// Extract enrollmentId from request
+			String enrollmentId = requestData.get("enrollmentId");
+
+			if (enrollmentId == null || enrollmentId.isEmpty()) {
+				response.put("success", false);
+				response.put("message", "Enrollment ID is required");
+				return ResponseEntity.badRequest().body(response);
+			}
+
+			// Check if student exists
+			if (!studentService.validateStudent(enrollmentId)) {
+				response.put("success", false);
+				response.put("message", "Student not found with enrollment ID: " + enrollmentId);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+			}
+
+			// Delete the student from both tables
+			boolean deleted = studentService.deleteStudent(enrollmentId);
+
+			if (deleted) {
+				response.put("success", true);
+				response.put("message", "Student deleted successfully");
+				return ResponseEntity.ok(response);
+			} else {
+				response.put("success", false);
+				response.put("message", "Failed to delete student");
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+			}
+
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error deleting student: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
 }

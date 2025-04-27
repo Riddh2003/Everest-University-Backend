@@ -11,23 +11,29 @@ public class EnrollmentIdGenerator {
 
     private static AtomicInteger counter = new AtomicInteger(1);
 
-    public static String generateEnrollmentId(String programCode) {
-        // Validate program code
-        if (programCode == null || programCode.isEmpty()) {
-            throw new IllegalArgumentException("Program code cannot be null or empty");
-        }
+    public static String generateEnrollmentId() {
+        StringBuilder idBuilder = new StringBuilder();
 
         // Get current timestamp for uniqueness
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String dateCode = LocalDateTime.now().format(formatter);
+        idBuilder.append(dateCode); // First 6 digits from date
 
-        // Get sequential number padded to 2 digits
-        String sequence = String.format("%02d", counter.getAndIncrement());
+        // Get sequential number for uniqueness
+        int sequentialNumber = counter.getAndIncrement();
 
-        // Generate department code (2 digits) from program code
-        String deptCode = programCode.substring(0, Math.min(programCode.length(), 2)).toUpperCase();
+        // Ensure the ID is exactly 10 digits long
+        int remainingDigits = 10 - dateCode.length();
+        String sequenceFormatted = String.format("%0" + remainingDigits + "d", sequentialNumber);
+        idBuilder.append(sequenceFormatted);
 
-        return dateCode + deptCode + sequence;
+        // Ensure the ID is exactly 10 digits
+        String enrollmentId = idBuilder.toString();
+        if (enrollmentId.length() > 10) {
+            enrollmentId = enrollmentId.substring(0, 10);
+        }
+
+        return enrollmentId;
     }
 
     public static void resetCounter() {

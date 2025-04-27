@@ -60,12 +60,6 @@ public class AdminController {
     @Autowired
     private StudentRepository studentRepository;
 
-    @Autowired
-    private CloudinaryService cloudinaryService;
-
-    @Autowired
-    private BCryptPasswordEncoder encoder;
-
     @GetMapping("/getalladmin")
     public ResponseEntity<?> getAllAdmin() {
         HashMap<String, Object> response = new HashMap<>();

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,9 +87,7 @@ public class ProfileController {
 			facultyEntity.setQualification(facultyDto.getQualification());
 			facultyEntity.setStatus(facultyDto.getStatus());
 			facultyEntity.setDepartment(facultyDto.getDepartment());
-
-			// Set profile picture to null initially
-			facultyEntity.setProfilePicture(null);
+			facultyEntity.setProfilePicture(facultyDto.getProfilePicture());
 
 			System.out.println("Saved...");
 			// Save the faculty entity
@@ -109,97 +108,49 @@ public class ProfileController {
 		}
 	}
 
-	@PutMapping("/updatefaculty")
-	public ResponseEntity<?> updateFaculty(@RequestBody FacultyDto facultyDto) {
-		try {
-			// Find faculty by ID
-			Optional<FacultyEntity> optional = facultyRepository.findById(facultyDto.getFacultyId());
-			if (optional.isEmpty()) {
-				return ResponseEntity.badRequest().body("Faculty not found with the provided ID.");
-			}
+	// @PutMapping("/updatefaculty")
+	// public ResponseEntity<?> updateFaculty(@RequestParam UUID facultyId) {
+	// try {
+	// // Find faculty by ID
+	// Optional<FacultyEntity> optional = facultyRepository.findById(facultyId);
+	// if (optional.isEmpty()) {
+	// return ResponseEntity.badRequest().body("Faculty not found with the provided
+	// ID.");
+	// }
 
-			FacultyEntity facultyEntity = optional.get();
+	// FacultyEntity facultyEntity = optional.get();
 
-			// Update faculty details
-			if (facultyDto.getName() != null)
-				facultyEntity.setName(facultyDto.getName());
-			if (facultyDto.getEmail() != null)
-				facultyEntity.setEmail(facultyDto.getEmail());
-			if (facultyDto.getPhoneNumber() != null)
-				facultyEntity.setPhoneNumber(facultyDto.getPhoneNumber());
-			if (facultyDto.getQualification() != null)
-				facultyEntity.setQualification(facultyDto.getQualification());
-			if (facultyDto.getStatus() != null)
-				facultyEntity.setStatus(facultyDto.getStatus());
-			if (facultyDto.getPassword() != null)
-				facultyEntity.setPassword(encoder.encode(facultyDto.getPassword()));
-			if (facultyDto.getRole() != null)
-				facultyEntity.setRole(facultyDto.getRole());
-			if (facultyDto.getDepartment() != null)
-				facultyEntity.setDepartment(facultyDto.getDepartment());
-			if (facultyDto.getAddress() != null)
-				facultyEntity.setAddress(facultyDto.getAddress());
-			if (facultyDto.getGender() != null)
-				facultyEntity.setGender(facultyDto.getGender());
+	// // Update faculty details
+	// if (facultyDto.getName() != null)
+	// facultyEntity.setName(facultyDto.getName());
+	// if (facultyDto.getEmail() != null)
+	// facultyEntity.setEmail(facultyDto.getEmail());
+	// if (facultyDto.getPhoneNumber() != null)
+	// facultyEntity.setPhoneNumber(facultyDto.getPhoneNumber());
+	// if (facultyDto.getQualification() != null)
+	// facultyEntity.setQualification(facultyDto.getQualification());
+	// if (facultyDto.getStatus() != null)
+	// facultyEntity.setStatus(facultyDto.getStatus());
+	// if (facultyDto.getPassword() != null)
+	// facultyEntity.setPassword(encoder.encode(facultyDto.getPassword()));
+	// if (facultyDto.getRole() != null)
+	// facultyEntity.setRole(facultyDto.getRole());
+	// if (facultyDto.getDepartment() != null)
+	// facultyEntity.setDepartment(facultyDto.getDepartment());
+	// if (facultyDto.getAddress() != null)
+	// facultyEntity.setAddress(facultyDto.getAddress());
+	// if (facultyDto.getGender() != null)
+	// facultyEntity.setGender(facultyDto.getGender());
 
-			// Save the updated faculty details to the database
-			facultyRepository.save(facultyEntity);
+	// // Save the updated faculty details to the database
+	// facultyRepository.save(facultyEntity);
 
-			return ResponseEntity.ok("Faculty profile updated successfully.");
-		} catch (Exception e) {
-			return ResponseEntity.status(500).body("Error updating faculty profile: " + e.getMessage());
-		}
-	}
-
-	@PutMapping(value = "/updatefaculty-with-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> updateFacultyWithProfile(@RequestPart("faculty") FacultyDto facultyDto,
-			@RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
-		try {
-			// Find faculty by ID
-			Optional<FacultyEntity> optional = facultyRepository.findById(facultyDto.getFacultyId());
-			if (optional.isEmpty()) {
-				return ResponseEntity.badRequest().body("Faculty not found with the provided ID.");
-			}
-
-			FacultyEntity facultyEntity = optional.get();
-
-			// Update faculty details
-			if (facultyDto.getName() != null)
-				facultyEntity.setName(facultyDto.getName());
-			if (facultyDto.getEmail() != null)
-				facultyEntity.setEmail(facultyDto.getEmail());
-			if (facultyDto.getPhoneNumber() != null)
-				facultyEntity.setPhoneNumber(facultyDto.getPhoneNumber());
-			if (facultyDto.getQualification() != null)
-				facultyEntity.setQualification(facultyDto.getQualification());
-			if (facultyDto.getStatus() != null)
-				facultyEntity.setStatus(facultyDto.getStatus());
-			if (facultyDto.getPassword() != null)
-				facultyEntity.setPassword(encoder.encode(facultyDto.getPassword()));
-			if (facultyDto.getRole() != null)
-				facultyEntity.setRole(facultyDto.getRole());
-			if (facultyDto.getDepartment() != null)
-				facultyEntity.setDepartment(facultyDto.getDepartment());
-			if (facultyDto.getAddress() != null)
-				facultyEntity.setAddress(facultyDto.getAddress());
-			if (facultyDto.getGender() != null)
-				facultyEntity.setGender(facultyDto.getGender());
-
-			// Upload profile picture if provided
-			if (profilePicture != null && !profilePicture.isEmpty()) {
-				String profilePictureUrl = cloudinaryService.uploadFileToDocumentsFolder(profilePicture,
-						facultyDto.getName());
-				facultyEntity.setProfilePicture(profilePictureUrl);
-			}
-
-			// Save the updated faculty details to the database
-			facultyRepository.save(facultyEntity);
-
-			return ResponseEntity.ok("Faculty profile updated successfully.");
-		} catch (Exception e) {
-			return ResponseEntity.status(500).body("Error updating faculty profile: " + e.getMessage());
-		}
-	}
+	// return ResponseEntity.ok("Faculty profile updated successfully.");
+	// } catch (Exception e) {
+	// return ResponseEntity.status(500).body("Error updating faculty profile: " +
+	// e.getMessage());
+	// }
+	// }
 
 	@PutMapping("/updateadmin")
 	public ResponseEntity<?> updateAdmin(@RequestBody AdminDto adminDto) {

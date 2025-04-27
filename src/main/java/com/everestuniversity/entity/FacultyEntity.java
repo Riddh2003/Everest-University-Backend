@@ -58,7 +58,7 @@ public class FacultyEntity {
     @Column(nullable = false)
     String address;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     String profilePicture;
 
     @CreationTimestamp
